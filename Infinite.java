@@ -8,28 +8,21 @@ public class Infinite
 {
   public ArrayList pathX = new ArrayList();
   public ArrayList pathY = new ArrayList();
-  private int segments;
-  private int coords;
-  private int steps;
-  private int delay;
+  public int coords;
 
   //Constructor
-  public Infinite(int radius, int segments, int steps, int delay)
+  public Infinite(int radius)
   {
     if (radius < 0) radius = - radius;
 
-    Circle c1 = new Circle(radius, radius + 100, radius + 100);
-    Circle c2 = new Circle(radius, 3 * radius + 100, radius + 100);
+    Circle c1 = new Circle(radius, radius + 50, radius + 100);
+    Circle c2 = new Circle(radius, 3 * radius + 50, radius + 100);
 
     ArrayList tempPathX;
     ArrayList tempPathY;
 
     pathX = new ArrayList();
     pathY = new ArrayList();
-
-    this.segments = segments;
-    this.steps = steps;
-    this.delay = delay;
 
     c1.segment(1, -1, false, false);
     tempPathX = c1.listX;

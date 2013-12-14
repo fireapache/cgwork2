@@ -27,14 +27,13 @@ public class MorphingCandS extends TimerTask
   private int width;
   private int height;
 
-  //The number of steps (frames) for the transformation.
-  private int steps;
-
   //The first triangulated image.
-  private TriangulatedImage t1;
+  //private TriangulatedImage t1;
 
   //The second triangulated image.
-  private TriangulatedImage t2;
+  //private TriangulatedImage t2;
+
+  private TriangulatedImage ts[];
 
   //This is used for generating/storing the intermediate images.
   private BufferedImage mix;
@@ -48,22 +47,39 @@ public class MorphingCandS extends TimerTask
 
   private int[][] triangles;
 
+  private Infinite inf;
+
+  private int radius;
+  private int segments;
+  private int segment;
+  private int steps;
+  private int delay;
+
 
   /**
    * Constructor
    *
    * @param bid    The window in which the transformation is shown.
    */
-  MorphingCandS(BufferedImageDrawer bid)
+  MorphingCandS(BufferedImageDrawer bid, int radius, int segments, int steps)
   {
+    inf = new Infinite(radius);
+
+    this.radius = radius;
+    this.segments = segments;
+    this.steps = steps;
+    this.delay = delay;
+
+    segment = 0;
+
+    ts = new TriangulatedImage[16];
+
     buffid = bid;
 
     width = 500;
     height = 250;
 
-    steps = 100;
-
-    deltaAlpha = 1.0/steps;
+    deltaAlpha = 1.0 / steps;
 
     alpha = 0;
 
@@ -133,73 +149,128 @@ public class MorphingCandS extends TimerTask
     triangles[15][1] = 8;
     triangles[15][2] = 12;
 
-    //This object is used for loading the two images.
     Image loadedImage;
 
-    //Generating the first triangulated image:
-    t1 = new TriangulatedImage();
+    for (int i = 0; i < 16; i++)
+    {
+      ts[i] = new TriangulatedImage();
 
-    //Define the size.
-    t1.bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+      ts[i].bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-    //Generate the Graphics2D object.
-    Graphics2D g2dt1 = t1.bi.createGraphics();
+      Graphics2D g2dt = ts[i].bi.createGraphics();
 
-    //Load the image and draw it on the corresponding BufferedImage.
-    loadedImage = new javax.swing.ImageIcon("images/1.jpg").getImage();
-    g2dt1.drawImage(loadedImage,0,0,null);
+      loadedImage = new javax.swing.ImageIcon("images/" + (i + 1) + ".jpg").getImage();
+      g2dt.drawImage(loadedImage, 0, 0, null);
 
-    //Definition of the points for the triangulation.
-    t1.tPoints = new Point2D[13];
+      ts[i].tPoints = new Point2D[13];
 
-    t1.tPoints[0] = new Point2D.Double(0, 0);
-    t1.tPoints[1] = new Point2D.Double(250, 0);
-    t1.tPoints[2] = new Point2D.Double(499, 0);
-    t1.tPoints[3] = new Point2D.Double(499, 125);
-    t1.tPoints[4] = new Point2D.Double(499, 249);
-    t1.tPoints[5] = new Point2D.Double(250, 249);
-    t1.tPoints[6] = new Point2D.Double(0, 249);
-    t1.tPoints[7] = new Point2D.Double(0, 125);
-    t1.tPoints[8] = new Point2D.Double(50, 10);
-    t1.tPoints[9] = new Point2D.Double(285, 10);
-    t1.tPoints[10] = new Point2D.Double(50, 240);
-    t1.tPoints[11] = new Point2D.Double(285, 240);
-    t1.tPoints[12] = new Point2D.Double(165, 150);
+      ts[i].tPoints[0] = new Point2D.Double(0, 0);
+      ts[i].tPoints[1] = new Point2D.Double(250, 0);
+      ts[i].tPoints[2] = new Point2D.Double(499, 0);
+      ts[i].tPoints[3] = new Point2D.Double(499, 125);
+      ts[i].tPoints[4] = new Point2D.Double(499, 249);
+      ts[i].tPoints[5] = new Point2D.Double(250, 249);
+      ts[i].tPoints[6] = new Point2D.Double(0, 249);
+      ts[i].tPoints[7] = new Point2D.Double(0, 125);
 
-    //Definition of the triangles.
-    t1.triangles = triangles;
+      ts[i].triangles = triangles;
+    }
 
-    //The same for the second image.
-    t2 = new TriangulatedImage();
+    ts[0].tPoints[8] = new Point2D.Double(50, 10);
+    ts[0].tPoints[9] = new Point2D.Double(285, 10);
+    ts[0].tPoints[10] = new Point2D.Double(50, 240);
+    ts[0].tPoints[11] = new Point2D.Double(285, 240);
+    ts[0].tPoints[12] = new Point2D.Double(115, 117);
 
-    t2.bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-    Graphics2D g2dt2 = t2.bi.createGraphics();
+    ts[1].tPoints[8] = new Point2D.Double(125, 25);
+    ts[1].tPoints[9] = new Point2D.Double(355, 25);
+    ts[1].tPoints[10] = new Point2D.Double(125, 160);
+    ts[1].tPoints[11] = new Point2D.Double(355, 160);
+    ts[1].tPoints[12] = new Point2D.Double(105, 67);
 
-    loadedImage = new javax.swing.ImageIcon("images/2.jpg").getImage();
+    ts[2].tPoints[8] = new Point2D.Double(40, 130);
+    ts[2].tPoints[9] = new Point2D.Double(270, 130);
+    ts[2].tPoints[10] = new Point2D.Double(40, 245);
+    ts[2].tPoints[11] = new Point2D.Double(270, 245);
+    ts[2].tPoints[12] = new Point2D.Double(115, 57);
 
-    g2dt2.drawImage(loadedImage,0,0,null);
+    ts[3].tPoints[8] = new Point2D.Double(210, 50);
+    ts[3].tPoints[9] = new Point2D.Double(495, 50);
+    ts[3].tPoints[10] = new Point2D.Double(210, 240);
+    ts[3].tPoints[11] = new Point2D.Double(495, 240);
+    ts[3].tPoints[12] = new Point2D.Double(147, 75);
 
-    t2.tPoints = new Point2D[13];
+    ts[4].tPoints[8] = new Point2D.Double(100, 50);
+    ts[4].tPoints[9] = new Point2D.Double(395, 50);
+    ts[4].tPoints[10] = new Point2D.Double(100, 200);
+    ts[4].tPoints[11] = new Point2D.Double(395, 200);
+    ts[4].tPoints[12] = new Point2D.Double(147, 75);
 
-    t2.tPoints[0] = new Point2D.Double(0, 0);
-    t2.tPoints[1] = new Point2D.Double(250, 0);
-    t2.tPoints[2] = new Point2D.Double(499, 0);
-    t2.tPoints[3] = new Point2D.Double(499, 125);
-    t2.tPoints[4] = new Point2D.Double(499, 249);
-    t2.tPoints[5] = new Point2D.Double(250, 249);
-    t2.tPoints[6] = new Point2D.Double(0, 249);
-    t2.tPoints[7] = new Point2D.Double(0, 125);
-    t2.tPoints[8] = new Point2D.Double(125, 25);
-    t2.tPoints[9] = new Point2D.Double(355, 25);
-    t2.tPoints[10] = new Point2D.Double(125, 160);
-    t2.tPoints[11] = new Point2D.Double(355, 160);
-    t2.tPoints[12] = new Point2D.Double(240, 100);
+    ts[5].tPoints[8] = new Point2D.Double(160, 70);
+    ts[5].tPoints[9] = new Point2D.Double(285, 70);
+    ts[5].tPoints[10] = new Point2D.Double(160, 200);
+    ts[5].tPoints[11] = new Point2D.Double(285, 200);
+    ts[5].tPoints[12] = new Point2D.Double(62, 65);
 
+    ts[6].tPoints[8] = new Point2D.Double(227, 8);
+    ts[6].tPoints[9] = new Point2D.Double(320, 8);
+    ts[6].tPoints[10] = new Point2D.Double(227, 229);
+    ts[6].tPoints[11] = new Point2D.Double(320, 229);
+    ts[6].tPoints[12] = new Point2D.Double(46, 110);
 
-    //The indexing for the triangles must be the same as in the
-    //the first image.
-    t2.triangles = triangles;
+    ts[7].tPoints[8] = new Point2D.Double(235, 88);
+    ts[7].tPoints[9] = new Point2D.Double(450, 88);
+    ts[7].tPoints[10] = new Point2D.Double(235, 230);
+    ts[7].tPoints[11] = new Point2D.Double(450, 230);
+    ts[7].tPoints[12] = new Point2D.Double(107, 71);
 
+    ts[8].tPoints[8] = new Point2D.Double(180, 10);
+    ts[8].tPoints[9] = new Point2D.Double(360, 10);
+    ts[8].tPoints[10] = new Point2D.Double(180, 200);
+    ts[8].tPoints[11] = new Point2D.Double(360, 200);
+    ts[8].tPoints[12] = new Point2D.Double(90, 95);
+
+    ts[9].tPoints[8] = new Point2D.Double(70, 60);
+    ts[9].tPoints[9] = new Point2D.Double(460, 60);
+    ts[9].tPoints[10] = new Point2D.Double(70, 195);
+    ts[9].tPoints[11] = new Point2D.Double(460, 195);
+    ts[9].tPoints[12] = new Point2D.Double(195, 67);
+
+    ts[10].tPoints[8] = new Point2D.Double(37, 8);
+    ts[10].tPoints[9] = new Point2D.Double(435, 8);
+    ts[10].tPoints[10] = new Point2D.Double(37, 205);
+    ts[10].tPoints[11] = new Point2D.Double(435, 205);
+    ts[10].tPoints[12] = new Point2D.Double(199, 123);
+
+    ts[11].tPoints[8] = new Point2D.Double(45, 65);
+    ts[11].tPoints[9] = new Point2D.Double(480, 65);
+    ts[11].tPoints[10] = new Point2D.Double(45, 230);
+    ts[11].tPoints[11] = new Point2D.Double(80, 230);
+    ts[11].tPoints[12] = new Point2D.Double(217, 82);
+
+    ts[12].tPoints[8] = new Point2D.Double(230, 10);
+    ts[12].tPoints[9] = new Point2D.Double(410, 10);
+    ts[12].tPoints[10] = new Point2D.Double(230, 160);
+    ts[12].tPoints[11] = new Point2D.Double(410, 160);
+    ts[12].tPoints[12] = new Point2D.Double(90, 75);
+
+    ts[13].tPoints[8] = new Point2D.Double(10, 5);
+    ts[13].tPoints[9] = new Point2D.Double(350, 5);
+    ts[13].tPoints[10] = new Point2D.Double(10, 145);
+    ts[13].tPoints[11] = new Point2D.Double(350, 145);
+    ts[13].tPoints[12] = new Point2D.Double(170, 70);
+
+    ts[14].tPoints[8] = new Point2D.Double(120, 45);
+    ts[14].tPoints[9] = new Point2D.Double(470, 45);
+    ts[14].tPoints[10] = new Point2D.Double(120, 210);
+    ts[14].tPoints[11] = new Point2D.Double(470, 210);
+    ts[14].tPoints[12] = new Point2D.Double(175, 82);
+
+    ts[15].tPoints[8] = new Point2D.Double(170, 110);
+    ts[15].tPoints[9] = new Point2D.Double(330, 110);
+    ts[15].tPoints[10] = new Point2D.Double(170, 240);
+    ts[15].tPoints[11] = new Point2D.Double(330, 240);
+    ts[15].tPoints[12] = new Point2D.Double(80, 65);
   }
 
 
@@ -208,23 +279,59 @@ public class MorphingCandS extends TimerTask
   //updated image on the window.
   public void run()
   {
+    int x, y, x1, y1, x2, y2, jumpSeg, a, b;
 
     //Since this method is called arbitrarily often, interpolation must only
     //be carred out while alpha is between 0 and 1.
-    if (alpha>=0 && alpha<=1)
+    if (alpha >= 0 && alpha <= 1)
     {
-      //Generate the interpolated image.
-      mix = t1.mixWith(t2,alpha);
+      jumpSeg = inf.coords / segments;
+
+      a = jumpSeg * segment;
+
+      if (segment == 14)
+        b = 0;
+      else
+        b = jumpSeg * (segment + 1);
+
+      x1 = (int)inf.pathX.get(a);
+      y1 = (int)inf.pathY.get(a);
+
+      x2 = (int)inf.pathX.get(b);
+      y2 = (int)inf.pathY.get(b);
+
+      x = (int)((1 - alpha) * x1 + alpha * x2);
+      y = (int)((1 - alpha) * y1 + alpha * y2);
+
+      if (segment == 14)
+        mix = ts[segment].mixWith(ts[0], alpha);
+      else
+        mix = ts[segment].mixWith(ts[segment + 1], alpha);
 
       //Draw the interpolated image on the BufferedImage.
-      buffid.g2dbi.drawImage(mix,50,50,null);
+      buffid.g2dbi.drawImage(mix, x, y, null);
+
+      //x = (1 - alpha) * ax + alpha * bx;
+      //y = (1 - alpha) * ay + alpha * by;
 
       //Call the method for updating the window.
       buffid.repaint();
     }
+    else if (segment < 14)
+    {
+      alpha = 0.0;
+
+      segment++;
+    }
+    else
+    {
+      alpha = 0.0;
+
+      segment = 0;
+    }
 
     //Increment alpha.
-    alpha = alpha+deltaAlpha;
+    alpha += deltaAlpha;
 
   }
 
@@ -232,28 +339,30 @@ public class MorphingCandS extends TimerTask
   public static void main(String[] argv)
   {
 
-    //Width of the window.
-    int width = 600;
-    //Height of the window.
-    int height = 400;
+    if (argv.length < 3) return;
 
-    //Specifies (in milliseconds) when the frame should be updated.
-    int delay = 50;
+    int radius = Integer.valueOf(argv[0]);
+    int segments = 16;
+    int steps = Integer.valueOf(argv[1]);
+    int delay = Integer.valueOf(argv[2]);
+
+    //Width of the window.
+    int width = 1366;
+    //Height of the window.
+    int height = 768;
 
     //The BufferedImage to be drawn in the window.
-    BufferedImage bi = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-
+    BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
     //The window in which everything is drawn.
-    BufferedImageDrawer bid = new BufferedImageDrawer(bi,width,height);
-    bid.setTitle("Transforming shape and colour");
+    BufferedImageDrawer bid = new BufferedImageDrawer(bi, width, height);
+    bid.setTitle("cgwork2");
 
     //The TimerTask in which the repeated computations for drawing take place.
-    MorphingCandS mcs = new MorphingCandS(bid);
-
+    MorphingCandS mcs = new MorphingCandS(bid, radius, segments, steps);
 
     Timer t = new Timer();
-    t.scheduleAtFixedRate(mcs,0,delay);
+    t.scheduleAtFixedRate(mcs, 0, delay);
 
   }
 
