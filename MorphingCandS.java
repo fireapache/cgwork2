@@ -176,21 +176,21 @@ public class MorphingCandS extends TimerTask
       //ts[i].triangles = triangles;
     }
 
-    ts[0].tPoints[8] = new Point2D.Double(50, 10);
-    ts[0].tPoints[9] = new Point2D.Double(285, 10);
+    ts[0].tPoints[8] = new Point2D.Double(57, 76);
+    ts[0].tPoints[9] = new Point2D.Double(187, 76);
     //ts[0].tPoints[10] = new Point2D.Double(50, 240);
     //ts[0].tPoints[11] = new Point2D.Double(285, 240);
-    ts[0].tPoints[10] = new Point2D.Double(285, 240);
-    ts[0].tPoints[11] = new Point2D.Double(50, 240);
-    ts[0].tPoints[12] = new Point2D.Double(115, 117);
+    ts[0].tPoints[10] = new Point2D.Double(187, 206);
+    ts[0].tPoints[11] = new Point2D.Double(57, 206);
+    ts[0].tPoints[12] = new Point2D.Double(123, 142);
 
-    ts[1].tPoints[8] = new Point2D.Double(125, 25);
-    ts[1].tPoints[9] = new Point2D.Double(355, 25);
+    ts[1].tPoints[8] = new Point2D.Double(76, 62);
+    ts[1].tPoints[9] = new Point2D.Double(201, 95);
     //ts[1].tPoints[10] = new Point2D.Double(125, 160);
     //ts[1].tPoints[11] = new Point2D.Double(355, 160);
-    ts[1].tPoints[11] = new Point2D.Double(125, 160);
-    ts[1].tPoints[10] = new Point2D.Double(355, 160);
-    ts[1].tPoints[12] = new Point2D.Double(105, 67);
+    ts[1].tPoints[10] = new Point2D.Double(168, 220);
+    ts[1].tPoints[11] = new Point2D.Double(42, 187);
+    ts[1].tPoints[12] = new Point2D.Double(123, 142);
 
     ts[2].tPoints[8] = new Point2D.Double(40, 130);
     ts[2].tPoints[9] = new Point2D.Double(270, 130);
