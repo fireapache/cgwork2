@@ -3,6 +3,7 @@ import java.awt.geom.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
 * A simple example for transforming one triangulated image into another one.
@@ -55,13 +56,17 @@ public class MorphingCandS extends TimerTask
   private int steps;
   private int delay;
 
+  private BufferedImage clear;
+  private int imgWidth;
+  private int imgHeight;
+
 
   /**
    * Constructor
    *
    * @param bid    The window in which the transformation is shown.
    */
-  MorphingCandS(BufferedImageDrawer bid, int radius, int segments, int steps)
+  MorphingCandS(BufferedImageDrawer bid, int radius, int segments, int steps, int imgWidth, int imgHeight)
   {
     inf = new Infinite(radius);
 
@@ -69,6 +74,10 @@ public class MorphingCandS extends TimerTask
     this.segments = segments;
     this.steps = steps;
     this.delay = delay;
+    this.imgWidth = imgWidth;
+    this.imgHeight = imgHeight;
+
+    clear = new BufferedImage((int)(imgWidth * 1.2), (int)(imgHeight * 1.2), BufferedImage.TYPE_INT_RGB);
 
     segment = 0;
 
@@ -150,6 +159,7 @@ public class MorphingCandS extends TimerTask
     triangles[15][2] = 12;
 
     Image loadedImage;
+    Random rand = new Random();
 
     for (int i = 0; i < 16; i++)
     {
@@ -172,139 +182,14 @@ public class MorphingCandS extends TimerTask
       ts[i].tPoints[5] = new Point2D.Double(250, 249);
       ts[i].tPoints[6] = new Point2D.Double(0, 249);
       ts[i].tPoints[7] = new Point2D.Double(0, 125);
+      ts[i].tPoints[8] = new Point2D.Double(rand.nextInt(200) + 20, rand.nextInt(80) + 20);
+      ts[i].tPoints[9] = new Point2D.Double(rand.nextInt(200) + 270, rand.nextInt(80) + 20);
+      ts[i].tPoints[10] = new Point2D.Double(rand.nextInt(200) + 270, rand.nextInt(80) + 145);
+      ts[i].tPoints[11] = new Point2D.Double(rand.nextInt(200) + 20, rand.nextInt(80) + 145);
+      ts[i].tPoints[12] = new Point2D.Double(250,126);
 
-      //ts[i].triangles = triangles;
+      ts[i].triangles = triangles;
     }
-
-    ts[0].tPoints[8] = new Point2D.Double(57, 76);
-    ts[0].tPoints[9] = new Point2D.Double(187, 76);
-    //ts[0].tPoints[10] = new Point2D.Double(50, 240);
-    //ts[0].tPoints[11] = new Point2D.Double(285, 240);
-    ts[0].tPoints[10] = new Point2D.Double(187, 206);
-    ts[0].tPoints[11] = new Point2D.Double(57, 206);
-    ts[0].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[1].tPoints[8] = new Point2D.Double(76, 62);
-    ts[1].tPoints[9] = new Point2D.Double(201, 95);
-    //ts[1].tPoints[10] = new Point2D.Double(125, 160);
-    //ts[1].tPoints[11] = new Point2D.Double(355, 160);
-    ts[1].tPoints[10] = new Point2D.Double(168, 220);
-    ts[1].tPoints[11] = new Point2D.Double(42, 187);
-    ts[1].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[2].tPoints[8] = new Point2D.Double(98, 52);
-    ts[2].tPoints[9] = new Point2D.Double(210, 117);
-    //ts[2].tPoints[10] = new Point2D.Double(40, 245);
-    //ts[2].tPoints[11] = new Point2D.Double(270, 245);
-    ts[2].tPoints[10] = new Point2D.Double(145, 230);
-    ts[2].tPoints[11] = new Point2D.Double(33, 164);
-    ts[2].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[3].tPoints[8] = new Point2D.Double(122, 49);
-    ts[3].tPoints[9] = new Point2D.Double(213, 141);
-    //ts[3].tPoints[10] = new Point2D.Double(210, 240);
-    //ts[3].tPoints[11] = new Point2D.Double(495, 240);
-    ts[3].tPoints[10] = new Point2D.Double(122, 232);
-    ts[3].tPoints[11] = new Point2D.Double(145, 230);
-    ts[3].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[4].tPoints[8] = new Point2D.Double(145, 52);
-    ts[4].tPoints[9] = new Point2D.Double(210, 165);
-    //ts[4].tPoints[10] = new Point2D.Double(100, 200);
-    //ts[4].tPoints[11] = new Point2D.Double(395, 200);
-    ts[4].tPoints[10] = new Point2D.Double(97, 230);
-    ts[4].tPoints[11] = new Point2D.Double(33, 117);
-    ts[4].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[5].tPoints[8] = new Point2D.Double(168, 62);
-    ts[5].tPoints[9] = new Point2D.Double(201, 186);
-    //ts[5].tPoints[10] = new Point2D.Double(160, 200);
-    //ts[5].tPoints[11] = new Point2D.Double(285, 200);
-    ts[5].tPoints[10] = new Point2D.Double(75, 220);
-    ts[5].tPoints[11] = new Point2D.Double(42, 95);
-    ts[5].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[6].tPoints[8] = new Point2D.Double(187, 76);
-    ts[6].tPoints[9] = new Point2D.Double(187, 206);
-    //ts[6].tPoints[10] = new Point2D.Double(227, 229);
-    //ts[6].tPoints[11] = new Point2D.Double(320, 229);
-    ts[6].tPoints[10] = new Point2D.Double(57, 206);
-    ts[6].tPoints[11] = new Point2D.Double(57, 76);
-    ts[6].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[7].tPoints[8] = new Point2D.Double(201, 95);
-    ts[7].tPoints[9] = new Point2D.Double(168, 220);
-    //ts[7].tPoints[10] = new Point2D.Double(235, 230);
-    //ts[7].tPoints[11] = new Point2D.Double(450, 230);
-    ts[7].tPoints[10] = new Point2D.Double(42, 187);
-    ts[7].tPoints[11] = new Point2D.Double(76, 62);
-    ts[7].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[8].tPoints[8] = new Point2D.Double(210, 117);
-    ts[8].tPoints[9] = new Point2D.Double(33, 164);
-    //ts[8].tPoints[10] = new Point2D.Double(180, 200);
-    //ts[8].tPoints[11] = new Point2D.Double(360, 200);
-    ts[8].tPoints[10] = new Point2D.Double(145, 230);
-    ts[8].tPoints[11] = new Point2D.Double(98, 52);
-    ts[8].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[9].tPoints[8] = new Point2D.Double(213, 141);
-    ts[9].tPoints[9] = new Point2D.Double(122, 232);
-    //ts[9].tPoints[10] = new Point2D.Double(70, 195);
-    //ts[9].tPoints[11] = new Point2D.Double(460, 195);
-    ts[9].tPoints[10] = new Point2D.Double(30, 141);
-    ts[9].tPoints[11] = new Point2D.Double(122, 49);
-    ts[9].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[10].tPoints[8] = new Point2D.Double(210, 164);
-    ts[10].tPoints[9] = new Point2D.Double(98, 229);
-    //ts[10].tPoints[10] = new Point2D.Double(37, 205);
-    //ts[10].tPoints[11] = new Point2D.Double(435, 205);
-    ts[10].tPoints[10] = new Point2D.Double(33, 117);
-    ts[10].tPoints[11] = new Point2D.Double(145, 53);
-    ts[10].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[11].tPoints[8] = new Point2D.Double(201, 187);
-    ts[11].tPoints[9] = new Point2D.Double(76, 220);
-    //ts[11].tPoints[10] = new Point2D.Double(45, 230);
-    //ts[11].tPoints[11] = new Point2D.Double(80, 230);
-    ts[11].tPoints[10] = new Point2D.Double(41, 95);
-    ts[11].tPoints[11] = new Point2D.Double(167, 61);
-    ts[11].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[12].tPoints[8] = new Point2D.Double(187, 206);
-    ts[12].tPoints[9] = new Point2D.Double(57, 206);
-    //ts[12].tPoints[10] = new Point2D.Double(230, 160);
-    //ts[12].tPoints[11] = new Point2D.Double(410, 160);
-    ts[12].tPoints[10] = new Point2D.Double(57, 76);
-    ts[12].tPoints[11] = new Point2D.Double(187, 76);
-    ts[12].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[13].tPoints[8] = new Point2D.Double(145, 230);
-    ts[13].tPoints[9] = new Point2D.Double(33, 164);
-    //ts[13].tPoints[10] = new Point2D.Double(10, 145);
-    //ts[13].tPoints[11] = new Point2D.Double(350, 145);
-    ts[13].tPoints[10] = new Point2D.Double(98, 52);
-    ts[13].tPoints[11] = new Point2D.Double(210, 117);
-    ts[13].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[14].tPoints[8] = new Point2D.Double(122, 232);
-    ts[14].tPoints[9] = new Point2D.Double(30, 141);
-    //ts[14].tPoints[10] = new Point2D.Double(120, 210);
-    //ts[14].tPoints[11] = new Point2D.Double(470, 210);
-    ts[14].tPoints[10] = new Point2D.Double(122, 49);
-    ts[14].tPoints[11] = new Point2D.Double(213, 141);
-    ts[14].tPoints[12] = new Point2D.Double(123, 142);
-
-    ts[15].tPoints[8] = new Point2D.Double(97, 230);
-    ts[15].tPoints[9] = new Point2D.Double(33, 117);
-    //ts[15].tPoints[10] = new Point2D.Double(170, 240);
-    //ts[15].tPoints[11] = new Point2D.Double(330, 240);
-    ts[15].tPoints[10] = new Point2D.Double(145, 52);
-    ts[15].tPoints[11] = new Point2D.Double(210, 165);
-    ts[15].tPoints[12] = new Point2D.Double(123, 142);
-
-    for (int i = 0; i < 16; i++) ts[i].triangles = triangles;
   }
 
 
@@ -313,7 +198,10 @@ public class MorphingCandS extends TimerTask
   //updated image on the window.
   public void run()
   {
-    int x, y, x1, y1, x2, y2, jumpSeg, a, b;
+    int oldX, oldY, x, y, x1, y1, x2, y2, jumpSeg, a, b;
+
+    oldX = (int)inf.pathX.get(0);
+    oldY = (int)inf.pathY.get(0);
 
     //Since this method is called arbitrarily often, interpolation must only
     //be carred out while alpha is between 0 and 1.
@@ -337,16 +225,17 @@ public class MorphingCandS extends TimerTask
       x = (int)((1 - alpha) * x1 + alpha * x2);
       y = (int)((1 - alpha) * y1 + alpha * y2);
 
+      oldX = x - (int)((imgWidth * 1.2 - imgWidth) / 2.0);
+      oldY = y - (int)((imgHeight * 1.2 - imgHeight) / 2.0);
+
       if (segment == 14)
         mix = ts[segment].mixWith(ts[0], alpha);
       else
         mix = ts[segment].mixWith(ts[segment + 1], alpha);
 
       //Draw the interpolated image on the BufferedImage.
+      buffid.g2dbi.drawImage(clear, oldX, oldY, null);
       buffid.g2dbi.drawImage(mix, x, y, null);
-
-      //x = (1 - alpha) * ax + alpha * bx;
-      //y = (1 - alpha) * ay + alpha * by;
 
       //Call the method for updating the window.
       buffid.repaint();
@@ -393,7 +282,7 @@ public class MorphingCandS extends TimerTask
     bid.setTitle("cgwork2");
 
     //The TimerTask in which the repeated computations for drawing take place.
-    MorphingCandS mcs = new MorphingCandS(bid, radius, segments, steps);
+    MorphingCandS mcs = new MorphingCandS(bid, radius, segments, steps, 500, 250);
 
     Timer t = new Timer();
     t.scheduleAtFixedRate(mcs, 0, delay);
