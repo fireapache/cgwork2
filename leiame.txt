@@ -1,0 +1,8 @@
+compilar: javac *.java
+executar: java MorphingCandS <radius> <steps> <delay>
+
+radius = raio do círculo
+steps = numero de pontos das interpolações
+delay = frames por segundo
+
+Trabalho desenvolvido por Daiane F. Andrade e Vinícius R. Santos
